@@ -1,0 +1,30 @@
+{
+    "name": "margusk/openssl-wrapper",
+    "description": "Object oriented wrapper around PHP OpenSSL extension",
+    "type": "library",
+    "keywords": ["openssl", "wrapper", "oop-wrapper"],
+    "authors": [
+        {
+        "name": "Margus Kaidja",
+        "email": "margusk@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "ext-openssl": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "margusk\\OpenSSL\\Wrapper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "margusk\\OpenSSL\\Wrapper\\Tests\\": "tests/"
+        }
+    }
+}
