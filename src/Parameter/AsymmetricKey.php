@@ -76,16 +76,6 @@ class AsymmetricKey extends Parameter
     }
 
     /**
-     * Parses private_key and prepares it for use by other functions.
-     *
-     * @link https://www.php.net/manual/en/function.openssl-pkey-get-private.php
-     */
-    public function pkeyGetPrivate(?string $passphrase = null): KeyResult
-    {
-        return $this->proxy->pkeyGetPrivate($this, $passphrase);
-    }
-
-    /**
      * Saves an ascii-armoured (PEM encoded) rendition of key into the file named by outputFilename.
      *
      * @link https://www.php.net/manual/en/function.openssl-pkey-export-to-file.php
