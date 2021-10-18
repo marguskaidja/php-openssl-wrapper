@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Tests;
 
+use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
 use PHPUnit\Framework\TestCase;
@@ -44,5 +45,16 @@ class FailureHandlerTest extends TestCase
         });
 
         $p->cipherIvLength("non-existing-cipher");
+    }
+
+    public function test_registering_failure_handler_with_invalid_regex_must_fail()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $p = new OpenSSLProxy();
+        $p->options()->onCallFailed(
+            'regex:this[is_invalid_re}gex',
+            function ($exception): Throwable {}
+        );
     }
 }
