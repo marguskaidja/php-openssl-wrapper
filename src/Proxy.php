@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
+use margusk\GetSet\Attributes\Get;
+use margusk\GetSet\GetSetTrait;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
@@ -32,19 +34,20 @@ use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use OpenSSLCertificateSigningRequest;
 
+/**
+ * @method Options options()
+ */
+#[Get]
 class Proxy
 {
+    use GetSetTrait;
+
     public function __construct(
         protected ?Options $options = null
     ) {
         if (null === $this->options) {
             $this->options = new Options();
         }
-    }
-
-    public function options(): Options
-    {
-        return $this->options;
     }
 
     /**
