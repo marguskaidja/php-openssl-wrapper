@@ -12,8 +12,18 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
+use margusk\GetSet\Attributes\Get;
+use margusk\GetSet\GetSetTrait;
+
+/**
+ * @method array openSSL()
+ * @method array php()
+ */
+#[Get]
 class Errors
 {
+    use GetSetTrait;
+
     public function __construct(
         protected array $php,
         protected array $openSSL
@@ -31,15 +41,5 @@ class Errors
     public function hasAny(): bool
     {
         return (count($this->php) > 0) || (count($this->openSSL) > 0);
-    }
-
-    public function openSSL(): array
-    {
-        return $this->openSSL;
-    }
-
-    public function php(): array
-    {
-        return $this->php;
     }
 }

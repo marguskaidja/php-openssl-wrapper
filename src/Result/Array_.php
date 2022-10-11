@@ -14,10 +14,9 @@ namespace margusk\OpenSSL\Wrapper\Result;
 
 use margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method array value()
+ */
 class Array_ extends Result
 {
-    public function value(): array
-    {
-        return $this->value;
-    }
 }

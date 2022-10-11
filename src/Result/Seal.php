@@ -12,15 +12,18 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method array    encryptedKeys()
+ * @method string   iv()
+ */
 class Seal extends String_
 {
-    public function encryptedKeys(): array
-    {
-        return $this->outParameters[2];
-    }
+    protected array $encryptedKeys;
+    protected string $iv;
 
-    public function iv(): string
+    protected function init(): void
     {
-        return $this->outParameters[5];
+        $this->encryptedKeys = $this->outParameters[2];
+        $this->iv = $this->outParameters[5];
     }
 }

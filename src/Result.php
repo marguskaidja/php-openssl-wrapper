@@ -12,8 +12,21 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-abstract class Result
+use margusk\GetSet\Attributes\Get;
+use margusk\GetSet\GetSetTrait;
+use Stringable;
+
+/**
+ * @method Errors   warnings()
+ * @method array    inParameters()
+ * @method array    outParameters()
+ * @method mixed    value()
+ */
+#[Get]
+abstract class Result implements Stringable
 {
+    use GetSetTrait;
+
     public function __construct(
         protected string $funcName,
         protected array $inParameters,
@@ -21,24 +34,13 @@ abstract class Result
         protected mixed $value,
         protected Errors $warnings,
     ) {
+        $this->init();
     }
 
-    public function warnings(): Errors
+    protected function init(): void
     {
-        return $this->warnings;
+        // placeholder for extended classes
     }
-
-    public function inParameters(): array
-    {
-        return $this->inParameters;
-    }
-
-    public function outParameters(): array
-    {
-        return $this->outParameters;
-    }
-
-    abstract public function value(): mixed;
 
     public function __toString(): string
     {

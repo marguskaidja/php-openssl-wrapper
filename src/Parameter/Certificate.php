@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Parameter;
 
-use margusk\OpenSSL\Wrapper\Call;
-use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
@@ -21,11 +19,13 @@ use margusk\OpenSSL\Wrapper\Proxy;
 use margusk\OpenSSL\Wrapper\Result\Array_ as ArrayResult;
 use margusk\OpenSSL\Wrapper\Result\AsymmetricKey as KeyResult;
 use margusk\OpenSSL\Wrapper\Result\Bool_ as BoolResult;
-use margusk\OpenSSL\Wrapper\Result\Certificate as CertResult;
 use margusk\OpenSSL\Wrapper\Result\Int_ as IntResult;
 use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use OpenSSLCertificate;
 
+/**
+ * @method OpenSSLCertificate internal()
+ */
 class Certificate extends Parameter
 {
     public function __construct(
@@ -33,11 +33,6 @@ class Certificate extends Parameter
         OpenSSLCertificate $internal
     ) {
         parent::__construct($proxy, $internal);
-    }
-
-    public function internal(): OpenSSLCertificate
-    {
-        return $this->internal;
     }
 
     /**

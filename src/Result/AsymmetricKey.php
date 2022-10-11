@@ -15,10 +15,9 @@ namespace margusk\OpenSSL\Wrapper\Result;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as AsymmetricKeyParam;
 use margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method AsymmetricKeyParam value()
+ */
 class AsymmetricKey extends Result
 {
-    public function value(): AsymmetricKeyParam
-    {
-        return $this->value;
-    }
 }

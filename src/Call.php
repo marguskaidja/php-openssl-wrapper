@@ -19,7 +19,7 @@ use margusk\GetSet\GetSetTrait;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate;
-use margusk\OpenSSL\Wrapper\Parameter\Contract as ComplexParamContract;
+use margusk\OpenSSL\Wrapper\Parameter as ComplexParam;
 use margusk\OpenSSL\Wrapper\Parameter\CSR;
 use margusk\OpenSSL\Wrapper\Result\Array_ as ArrayResult;
 use margusk\OpenSSL\Wrapper\Result\AsymmetricKey as KeyResult;
@@ -69,7 +69,7 @@ class Call
     protected function convertComplexParam(array $params, int $lvl = 0): array
     {
         foreach ($params as $n => $p) {
-            if ($p instanceof ComplexParamContract) {
+            if ($p instanceof ComplexParam) {
                 $params[$n] = $p->internal();
             } elseif (0 === $lvl && is_array($p)) {
                 $params[$n] = $this->convertComplexParam($params[$n], $lvl + 1);

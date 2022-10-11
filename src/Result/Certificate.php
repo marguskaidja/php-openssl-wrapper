@@ -15,10 +15,9 @@ namespace margusk\OpenSSL\Wrapper\Result;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as CertParam;
 use margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method CertParam value()
+ */
 class Certificate extends Result
 {
-    public function value(): CertParam
-    {
-        return $this->value;
-    }
 }

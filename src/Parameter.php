@@ -12,18 +12,21 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\OpenSSL\Wrapper\Parameter\Contract as ParameterContract;
+use margusk\GetSet\Attributes\Get;
+use margusk\GetSet\GetSetTrait;
 
-abstract class Parameter implements ParameterContract
+/**
+ * @method Proxy proxy()
+ * @method mixed internal()
+ */
+#[Get]
+abstract class Parameter
 {
+    use GetSetTrait;
+
     public function __construct(
         protected Proxy $proxy,
         protected mixed $internal
     ) {
-    }
-
-    public function proxy(): Proxy
-    {
-        return $this->proxy;
     }
 }
