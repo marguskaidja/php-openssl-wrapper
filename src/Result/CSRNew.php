@@ -18,35 +18,32 @@ use margusk\OpenSSL\Wrapper\Parameter\CSR as CSRParam;
 use margusk\OpenSSL\Wrapper\Result;
 use OpenSSLAsymmetricKey;
 
+/**
+ * @method CSRParam value()
+ * @method Key privateKey()
+ */
 class CSRNew extends Result
 {
-    protected ?Key $privateKey = null;
+    protected Key $privateKey;
 
-    public function value(): CSRParam
+    protected function init(): void
     {
-        return $this->value;
-    }
+        $keyIn = $this->inParameters[1];
+        $keyOut = $this->outParameters[1];
 
-    public function privateKey(): Key
-    {
-        if (null === $this->privateKey) {
-            $keyIn = $this->inParameters[1];
-            $keyOut = $this->outParameters[1];
-
-            if ($keyIn instanceof Key && $keyIn->internal() === $keyOut) {
-                $this->privateKey = $keyIn;
-            } elseif ($keyOut instanceof OpenSSLAsymmetricKey) {
-                $this->privateKey = new Key($this->value()->proxy(), $keyOut);
-            } else {
-                throw new RuntimeException(
-                    sprintf(
-                        'expecting second out-parameter to be instanceof of "%s"',
-                        OpenSSLAsymmetricKey::class
-                    )
-                );
-            }
+        if ($keyIn instanceof Key && $keyIn->internal() === $keyOut) {
+            /** @var $keyIn Key */
+            $this->privateKey = $keyIn;
+        } elseif ($keyOut instanceof OpenSSLAsymmetricKey) {
+            /** @var $keyIn OpenSSLAsymmetricKey */
+            $this->privateKey = new Key($this->value()->proxy(), $keyOut);
+        } else {
+            throw new RuntimeException(
+                sprintf(
+                    'expecting second out-parameter to be instanceof of "%s"',
+                    OpenSSLAsymmetricKey::class
+                )
+            );
         }
-
-        return $this->privateKey;
     }
 }

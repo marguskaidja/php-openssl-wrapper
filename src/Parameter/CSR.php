@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Parameter;
 
-use margusk\OpenSSL\Wrapper\Call;
 use margusk\OpenSSL\Wrapper\Parameter;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
@@ -26,6 +25,9 @@ use OpenSSLCertificateSigningRequest;
 use OpenSSLCertificate;
 use OpenSSLAsymmetricKey;
 
+/**
+ * @method OpenSSLCertificateSigningRequest internal()
+ */
 class CSR extends Parameter
 {
     public function __construct(
@@ -33,11 +35,6 @@ class CSR extends Parameter
         OpenSSLCertificateSigningRequest $internal
     ) {
         parent::__construct($proxy, $internal);
-    }
-
-    public function internal(): OpenSSLCertificateSigningRequest
-    {
-        return $this->internal;
     }
 
     /**

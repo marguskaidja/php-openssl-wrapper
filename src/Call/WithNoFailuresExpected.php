@@ -10,9 +10,14 @@
 
 declare(strict_types=1);
 
-namespace margusk\OpenSSL\Wrapper\Parameter;
+namespace margusk\OpenSSL\Wrapper\Call;
 
-interface Contract
+use margusk\OpenSSL\Wrapper\Call;
+
+class WithNoFailuresExpected extends Call
 {
-    public function internal(): mixed;
+    protected function init(): void
+    {
+        $this->expectedFailures = [];
+    }
 }

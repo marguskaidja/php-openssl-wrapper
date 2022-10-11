@@ -27,6 +27,7 @@ use margusk\OpenSSL\Wrapper\Result\RandomPseudoBytes as RandomPseudoBytesResult;
 use margusk\OpenSSL\Wrapper\Result\Seal as SealResult;
 use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use margusk\OpenSSL\Wrapper\Result\CSRNew as CSRNewResult;
+use margusk\OpenSSL\Wrapper\Call\WithNoFailuresExpected as CallWithNoFailuresExpected;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use OpenSSLCertificateSigningRequest;
@@ -59,7 +60,7 @@ class Proxy
     public function cipherIvLength(string $cipherAlgo): IntResult
     {
         return (new Call($this, 'cipher_iv_length'))
-            ->withParameters($cipherAlgo)
+            ->withParameters([$cipherAlgo])
             ->getIntResult();
     }
 
@@ -76,7 +77,7 @@ class Proxy
         int $encoding = OPENSSL_ENCODING_SMIME
     ): BoolResult {
         return (new Call($this, 'cms_decrypt'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -95,7 +96,7 @@ class Proxy
         int $cipherAlgo = OPENSSL_CIPHER_RC2_40
     ): BoolResult {
         return (new Call($this, 'cms_encrypt'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -107,8 +108,13 @@ class Proxy
     public function cmsRead(string $inputFilename): ArrayResult
     {
         return (new Call($this, 'cms_read'))
-            ->withParameters($inputFilename, null)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $inputFilename,
+                    null
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getArrayResult();
     }
 
@@ -128,7 +134,7 @@ class Proxy
         ?string $untrustedCertificatesFilename = null
     ): BoolResult {
         return (new Call($this, 'cms_sign'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -148,9 +154,8 @@ class Proxy
         ?string $sigfile = null,
         int $encoding = OPENSSL_ENCODING_SMIME
     ): BoolResult {
-        return (new Call($this, 'cms_verify'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures()
+        return (new CallWithNoFailuresExpected($this, 'cms_verify'))
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -166,7 +171,7 @@ class Proxy
         bool $noText = true
     ): BoolResult {
         return (new Call($this, 'csr_export_to_file'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -181,8 +186,14 @@ class Proxy
         bool $noText = true
     ): StringResult {
         return (new Call($this, 'csr_export'))
-            ->withParameters($csr, ($output = ''), $noText)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $csr,
+                    '',
+                    $noText
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -196,7 +207,7 @@ class Proxy
         bool $shortNames = true
     ): KeyResult {
         return (new Call($this, 'csr_get_public_key'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getKeyResult();
     }
 
@@ -211,7 +222,7 @@ class Proxy
         bool $shortNames = true
     ): ArrayResult {
         return (new Call($this, 'csr_get_subject'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getArrayResult();
     }
 
@@ -227,7 +238,7 @@ class Proxy
         ?array $extraAttributes = null
     ): CSRNewResult {
         return (new Call($this, 'csr_new'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getCSRNewResult();
     }
 
@@ -245,7 +256,7 @@ class Proxy
         int $serial = 0
     ): CertResult {
         return (new Call($this, 'csr_sign'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getCertResult();
     }
 
@@ -264,7 +275,7 @@ class Proxy
         string $aad = ""
     ): StringResult {
         return (new Call($this, 'decrypt'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -278,7 +289,7 @@ class Proxy
         Key|OpenSSLAsymmetricKey $privateKey
     ): StringResult {
         return (new Call($this, 'dh_compute_key'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -293,7 +304,7 @@ class Proxy
         bool $binary = false
     ): StringResult {
         return (new Call($this, 'digest'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -312,7 +323,16 @@ class Proxy
         int $tagLength = 16
     ): EncryptResult {
         return (new Call($this, 'encrypt'))
-            ->withParameters($data, $cipherAlgo, $passphrase, $options, $iv, ($tag = ''), $aad, $tagLength)
+            ->withParameters([
+                $data,
+                $cipherAlgo,
+                $passphrase,
+                $options,
+                $iv,
+                '',
+                $aad,
+                $tagLength
+            ])
             ->getEncryptResult();
     }
 
@@ -324,8 +344,7 @@ class Proxy
      */
     public function getCertLocations(): ArrayResult
     {
-        return (new Call($this, 'get_cert_locations'))
-            ->withNoFailures()
+        return (new CallWithNoFailuresExpected($this, 'get_cert_locations'))
             ->getArrayResult();
     }
 
@@ -336,9 +355,8 @@ class Proxy
      */
     public function getCipherMethods(bool $aliases = false): ArrayResult
     {
-        return (new Call($this, 'get_cipher_methods'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures()
+        return (new CallWithNoFailuresExpected($this, 'get_cipher_methods'))
+            ->withParameters(func_get_args())
             ->getArrayResult();
     }
 
@@ -361,9 +379,8 @@ class Proxy
      */
     public function getMdMethods(bool $aliases = false): ArrayResult
     {
-        return (new Call($this, 'get_md_methods'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures()
+        return (new CallWithNoFailuresExpected($this, 'get_md_methods'))
+            ->withParameters(func_get_args())
             ->getArrayResult();
     }
 
@@ -384,8 +401,17 @@ class Proxy
         ?string $iv = null
     ): StringResult {
         return (new Call($this, 'open'))
-            ->withParameters($data, null, $encryptedKey, $privateKey, $cipherAlgo, $iv)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $encryptedKey,
+                    $privateKey,
+                    $cipherAlgo,
+                    $iv
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -402,7 +428,7 @@ class Proxy
         string $digestAlgo = "sha1"
     ): StringResult {
         return (new Call($this, 'pbkdf2'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -419,7 +445,7 @@ class Proxy
         array $options = []
     ): BoolResult {
         return (new Call($this, 'pkcs12_export_to_file'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -435,8 +461,16 @@ class Proxy
         array $options = []
     ): StringResult {
         return (new Call($this, 'pkcs12_export'))
-            ->withParameters($certificate, null, $privateKey, $passphrase, $options)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $certificate,
+                    null,
+                    $privateKey,
+                    $passphrase,
+                    $options
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -448,8 +482,14 @@ class Proxy
     public function pkcs12Read(string $pkcs12, string $passphrase): ArrayResult
     {
         return (new Call($this, 'pkcs12_export'))
-            ->withParameters($pkcs12, null, $passphrase)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $pkcs12,
+                    null,
+                    $passphrase
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getArrayResult();
     }
 
@@ -466,7 +506,7 @@ class Proxy
         Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string|null $privateKey = null
     ): BoolResult {
         return (new Call($this, 'pkcs7_decrypt'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -485,7 +525,7 @@ class Proxy
         int $cipherAlgo = OPENSSL_CIPHER_RC2_40
     ): BoolResult {
         return (new Call($this, 'pkcs7_encrypt'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -497,8 +537,13 @@ class Proxy
     public function pkcs7Read(string $data): ArrayResult
     {
         return (new Call($this, 'pkcs7_read'))
-            ->withParameters($data, null)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getArrayResult();
     }
 
@@ -518,7 +563,7 @@ class Proxy
         ?string $untrustedCertificatesFilename = null
     ): BoolResult {
         return (new Call($this, 'pkcs7_sign'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -537,8 +582,10 @@ class Proxy
         ?string $outputFilename = null
     ): BoolResult {
         return (new Call($this, 'pkcs7_verify'))
-            ->withParametersArray(func_get_args())
-            ->withExpectedFailures([false, -1])
+            ->with([
+                'parameters' => func_get_args(),
+                'expectedFailures' => [false, -1]
+            ])
             ->getBoolResult();
     }
 
@@ -553,7 +600,7 @@ class Proxy
         int $keyLength = 0
     ): StringResult {
         return (new Call($this, 'pkey_derive'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -569,7 +616,7 @@ class Proxy
         ?array $options = null
     ): BoolResult {
         return (new Call($this, 'pkey_export_to_file'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -584,8 +631,15 @@ class Proxy
         ?array $options = null
     ): StringResult {
         return (new Call($this, 'pkey_export'))
-            ->withParameters($key, null, $passphrase, $options)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $key,
+                    null,
+                    $passphrase,
+                    $options
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -597,7 +651,7 @@ class Proxy
     public function pkeyGetDetails(Key|OpenSSLAsymmetricKey $key): ArrayResult
     {
         return (new Call($this, 'pkey_get_details'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getArrayResult();
     }
 
@@ -611,7 +665,7 @@ class Proxy
         ?string $passphrase = null
     ): KeyResult {
         return (new Call($this, 'pkey_get_private'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getKeyResult();
     }
 
@@ -624,7 +678,7 @@ class Proxy
         Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $publicKey
     ): KeyResult {
         return (new Call($this, 'pkey_get_public'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getKeyResult();
     }
 
@@ -636,7 +690,7 @@ class Proxy
     public function pkeyNew(?array $options = null): KeyResult
     {
         return (new Call($this, 'pkey_new'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getKeyResult();
     }
 
@@ -652,8 +706,15 @@ class Proxy
         int $padding = OPENSSL_PKCS1_PADDING
     ): StringResult {
         return (new Call($this, 'private_decrypt'))
-            ->withParameters($data, null, $privateKey, $padding)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $privateKey,
+                    $padding
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -669,8 +730,15 @@ class Proxy
         int $padding = OPENSSL_PKCS1_PADDING
     ): StringResult {
         return (new Call($this, 'private_encrypt'))
-            ->withParameters($data, null, $privateKey, $padding)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $privateKey,
+                    $padding
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -686,8 +754,15 @@ class Proxy
         int $padding = OPENSSL_PKCS1_PADDING
     ): StringResult {
         return (new Call($this, 'public_decrypt'))
-            ->withParameters($data, null, $publicKey, $padding)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $publicKey,
+                    $padding
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -702,8 +777,15 @@ class Proxy
         int $padding = OPENSSL_PKCS1_PADDING
     ): StringResult {
         return (new Call($this, 'public_encrypt'))
-            ->withParameters($data, null, $publicKey, $padding)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $publicKey,
+                    $padding
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -718,7 +800,7 @@ class Proxy
     public function randomPseudoBytes(int $length): RandomPseudoBytesResult
     {
         return (new Call($this, 'random_pseudo_bytes'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getRandomPseudoBytesResult();
     }
 
@@ -733,7 +815,14 @@ class Proxy
         string $cipherAlgo,
     ): SealResult {
         return (new Call($this, 'seal'))
-            ->withParameters($data, null, null, $publicKey, $cipherAlgo, ($iv = ''))
+            ->withParameters([
+                $data,
+                null,
+                null,
+                $publicKey,
+                $cipherAlgo,
+                ''
+            ])
             ->getSealResult();
     }
 
@@ -748,8 +837,15 @@ class Proxy
         string|int $algorithm = OPENSSL_ALGO_SHA1
     ): StringResult {
         return (new Call($this, 'sign'))
-            ->withParameters($data, null, $privateKey, $algorithm)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    $privateKey,
+                    $algorithm
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -761,7 +857,7 @@ class Proxy
     public function spkiExportChallenge(string $spki): StringResult
     {
         return (new Call($this, 'spki_export_challenge'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -773,7 +869,7 @@ class Proxy
     public function spkiExport(string $spki): StringResult
     {
         return (new Call($this, 'spki_export'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -788,7 +884,7 @@ class Proxy
         int $digestAlgo = OPENSSL_ALGO_MD5
     ): StringResult {
         return (new Call($this, 'spki_new'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -800,7 +896,7 @@ class Proxy
     public function spkiVerify(string $spki): BoolResult
     {
         return (new Call($this, 'spki_verify'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -817,7 +913,7 @@ class Proxy
         string|int $algorithm = OPENSSL_ALGO_SHA1
     ): BoolResult {
         return (new Call($this, 'verify'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -830,9 +926,8 @@ class Proxy
         Cert|OpenSSLCertificate|string $certificate,
         Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $privateKey
     ): BoolResult {
-        return (new Call($this, 'x509_check_private_key'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures()
+        return (new CallWithNoFailuresExpected($this, 'x509_check_private_key'))
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -847,9 +942,8 @@ class Proxy
         array $caInfo = [],
         ?string $untrustedCertificatesFile = null
     ): BoolResult {
-        return (new Call($this, 'x509_checkpurpose'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures([-1])
+        return (new CallWithNoFailuresExpected($this, 'x509_checkpurpose'))
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -864,7 +958,7 @@ class Proxy
         bool $noText = true
     ): BoolResult {
         return (new Call($this, 'x509_export_to_file'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getBoolResult();
     }
 
@@ -878,8 +972,14 @@ class Proxy
         bool $noText = true
     ): StringResult {
         return (new Call($this, 'x509_export'))
-            ->withParameters($certificate, null, $noText)
-            ->withReturnNthParameter(1)
+            ->with([
+                'parameters' => [
+                    $certificate,
+                    null,
+                    $noText
+                ],
+                'returnNthParameter' => 1
+            ])
             ->getStringResult();
     }
 
@@ -894,7 +994,7 @@ class Proxy
         bool $binary = false
     ): StringResult {
         return (new Call($this, 'x509_fingerprint'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getStringResult();
     }
 
@@ -909,7 +1009,7 @@ class Proxy
         bool $shortNames = true
     ): ArrayResult {
         return (new Call($this, 'x509_parse'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getArrayResult();
     }
 
@@ -922,7 +1022,7 @@ class Proxy
         Cert|OpenSSLCertificate|string $certificate
     ): CertResult {
         return (new Call($this, 'x509_read'))
-            ->withParametersArray(func_get_args())
+            ->withParameters(func_get_args())
             ->getCertResult();
     }
 
@@ -936,9 +1036,8 @@ class Proxy
         Cert|OpenSSLCertificate|string $certificate,
         Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $publicKey
     ): IntResult {
-        return (new Call($this, 'x509_verify'))
-            ->withParametersArray(func_get_args())
-            ->withNoFailures([-1])
+        return (new CallWithNoFailuresExpected($this, 'x509_verify'))
+            ->withParameters(func_get_args())
             ->getIntResult();
     }
 }

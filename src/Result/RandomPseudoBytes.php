@@ -12,10 +12,15 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method bool strongResult()
+ */
 class RandomPseudoBytes extends String_
 {
-    public function strongResult(): bool
+    protected bool $strongResult;
+
+    protected function init(): void
     {
-        return $this->outParameters[1];
+        $this->strongResult = $this->outParameters[1];
     }
 }

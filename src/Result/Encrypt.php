@@ -12,10 +12,15 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Result;
 
+/**
+ * @method string tag()
+ */
 class Encrypt extends String_
 {
-    public function tag(): string
+    protected string $tag;
+
+    protected function init(): void
     {
-        return $this->outParameters[5];
+        $this->tag = $this->outParameters[5];
     }
 }
