@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace margusk\OpenSSL\Wrapper;
 
 use Closure;
+use margusk\GetSet\Attributes\Set;
+use margusk\GetSet\Attributes\Immutable;
+use margusk\GetSet\GetSetTrait;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate;
@@ -29,11 +32,20 @@ use margusk\OpenSSL\Wrapper\Result\Seal as SealResult;
 use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use margusk\OpenSSL\Wrapper\Result\CSRNew as CSRNewResult;
 
+/**
+ * @method self with(array|string $properties, mixed $value = null)
+ * @method self withParameters(array $value)
+ * @method self withExpectedFailures(array $value)
+ * @method self withReturnNthParameter(int $value)
+ */
+#[Set,Immutable]
 class Call
 {
+    use GetSetTrait;
+
     protected array $parameters = [];
 
-    protected array $failures = [false];
+    protected array $expectedFailures = [false];
 
     protected ?int $returnNthParameter = null;
 
@@ -41,39 +53,12 @@ class Call
         protected Proxy $proxy,
         protected string $funcNameSuffix
     ) {
+        $this->init();
     }
 
-    public function withParameters(...$parameters): static
+    protected function init(): void
     {
-        return $this->withParametersArray($parameters);
-    }
-
-    public function withParametersArray(array $parameters): static
-    {
-        $clone = clone $this;
-        $clone->parameters = $parameters;
-        return $clone;
-    }
-
-    public function withExpectedFailures(array $failures): static
-    {
-        $clone = clone $this;
-        $clone->failures = $failures;
-        return $clone;
-    }
-
-    public function withNoFailures(): static
-    {
-        $clone = clone $this;
-        $clone->failures = [];
-        return $clone;
-    }
-
-    public function withReturnNthParameter(int $n): static
-    {
-        $clone = clone $this;
-        $clone->returnNthParameter = $n;
-        return $clone;
+        // placeholder for extended classes
     }
 
     public function getArrayResult(): ArrayResult
@@ -125,8 +110,8 @@ class Call
         $errors = new Errors($phpErrors, $this->collectOpenSSLErrors());
         $callFailed = false;
 
-        if (count($this->failures)) {
-            $callFailed = in_array($nativeResult, $this->failures, true);
+        if (count($this->expectedFailures)) {
+            $callFailed = in_array($nativeResult, $this->expectedFailures, true);
         }
 
         if ($callFailed) {
