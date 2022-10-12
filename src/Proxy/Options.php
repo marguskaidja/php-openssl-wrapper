@@ -21,14 +21,51 @@ use ReflectionFunction;
 
 class Options
 {
-    protected array $onCallFailed = [];
+    protected array $failureHandlers = [];
 
-    public function onCallFailed(string $pattern, Closure $cb): static
+    public function registerFailureHandler(string $pattern, Closure $cb): static
     {
-        if (Throwable::class !== (new ReflectionFunction($cb))->getReturnType()?->getName()) {
+        $cloned = clone $this;
+        $cloned->registerFailureHandlerInternal($pattern, $cb);
+        return $cloned;
+    }
+
+    public function registerFailureHandlers(array $callbacks): static
+    {
+        $cloned = clone $this;
+        foreach ($callbacks as $pattern => $cb) {
+            $cloned->registerFailureHandlerInternal($pattern, $cb);
+        }
+        return $cloned;
+    }
+
+    protected function registerFailureHandlerInternal(string $pattern, Closure $cb): void
+    {
+        $rf = new ReflectionFunction($cb);
+
+        // Check callback's 1-st parameter
+        if ($rf->getNumberOfRequiredParameters() > 1) {
+            throw new InvalidArgumentException(
+                sprintf('callback must not require more than 1 parameter')
+            );
+        } else {
+            $argType = $rf->getParameters()[0]?->getType();
+
+            if (null !== $argType && OpenSSLCallFailedException::class !== $argType->getName()) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'callback\'s first parameter must accept "%s"',
+                        OpenSSLCallFailedException::class
+                    )
+                );
+            }
+        }
+
+        // Check callback's return type
+        if (Throwable::class !== $rf->getReturnType()?->getName()) {
             throw new InvalidArgumentException(
                 sprintf(
-                    "closure's return value must implement %s",
+                    'callback\'s return value must be instance of "%s"',
                     Throwable::class
                 )
             );
@@ -42,7 +79,7 @@ class Options
             $patternEx = "|".$pattern."|i";
 
             $errors = Util::catchPHPErrors(function () use ($patternEx) {
-                $result = preg_match($patternEx, "");
+                preg_match($patternEx, "");
             });
 
             if (count($errors)) {
@@ -55,27 +92,25 @@ class Options
                 );
             }
 
-            $this->onCallFailed[] = [
+            $this->failureHandlers[] = [
                 'type'    => 'regex',
                 'pattern' => $patternEx,
                 'cb'      => $cb
             ];
         } else {
-            $this->onCallFailed[] = [
+            $this->failureHandlers[] = [
                 'type'    => 'compare',
                 'pattern' => $pattern,
                 'cb'      => $cb
             ];
         }
-
-        return $this;
     }
 
-    public function callFailed(OpenSSLCallFailedException $exception): Throwable
+    public function invokeFailureHandler(OpenSSLCallFailedException $exception): Throwable
     {
         $funcName = $exception->funcName();
 
-        foreach ($this->onCallFailed as $e) {
+        foreach ($this->failureHandlers as $e) {
             if (('regex' === $e['type'] && preg_match($e['pattern'], $funcName))
                 || 0 === strcasecmp($funcName, $e['pattern'])
             ) {

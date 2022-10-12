@@ -16,8 +16,8 @@ use margusk\GetSet\Attributes\Get;
 use margusk\GetSet\GetSetTrait;
 
 /**
- * @method array openSSL()
- * @method array php()
+ * @method array openSSL()  Returns errors/warnings reported by linked openSSL library
+ * @method array php()      Returns errors/warnings reported by PHP engine
  */
 #[Get]
 class Errors

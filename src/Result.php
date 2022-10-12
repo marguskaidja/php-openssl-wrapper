@@ -17,10 +17,10 @@ use margusk\GetSet\GetSetTrait;
 use Stringable;
 
 /**
- * @method Errors   warnings()
- * @method array    inParameters()
- * @method array    outParameters()
- * @method mixed    value()
+ * @method Errors   warnings()      Returns Errors object encapsulating possible PHP/openSSL warning messages during the openssl_* function call
+ * @method array    inParameters()  Returns list of input parameters passed into openssl_* function
+ * @method array    outParameters() Returns list of parameters after beeing passed into openssl_* function and beeing possibly modified (e.g. openssl_seal)
+ * @method mixed    value()         Returns interpreted return value of openssl_* function
  */
 #[Get]
 abstract class Result implements Stringable
