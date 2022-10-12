@@ -12,32 +12,27 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Exception;
 
+use margusk\GetSet\Attributes\Get;
+use margusk\GetSet\GetSetTrait;
 use margusk\OpenSSL\Wrapper\Errors;
 use RuntimeException;
 
+/**
+ * @method string   funcName() Returns native openssl_* function causing the failure
+ * @method Errors   errors() Returns Errors object encapsulating PHP/openSSL error/warning messages during the openssl_* function call
+ * @method mixed    nativeResult() Returns the native result from the failed openssl_* function
+ */
+#[Get]
 class OpenSSLCallFailedException extends RuntimeException implements Contract
 {
+    use GetSetTrait;
+
     public function __construct(
         protected string $funcName,
         protected Errors $errors,
-        protected mixed $result
+        protected mixed $nativeResult
     ) {
         $message = $funcName.'(): '.implode("\n", $errors->all());
         parent::__construct($message, 0, null);
-    }
-
-    public function errors(): Errors
-    {
-        return $this->errors;
-    }
-
-    public function result(): mixed
-    {
-        return $this->result;
-    }
-
-    public function funcName(): string
-    {
-        return $this->funcName;
     }
 }

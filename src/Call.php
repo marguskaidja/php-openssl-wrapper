@@ -115,7 +115,7 @@ class Call
         }
 
         if ($callFailed) {
-            throw $this->proxy->options()->callFailed(
+            throw $this->proxy->options()->invokeFailureHandler(
                 new OpenSSLCallFailedException($funcName, $errors, $nativeResult)
             );
         }
@@ -133,8 +133,10 @@ class Call
 
     protected function flushOpenSSLErrors(): static
     {
+        /** @noinspection PhpStatementHasEmptyBodyInspection */
         while (false !== openssl_error_string()) {
         }
+
         return $this;
     }
 

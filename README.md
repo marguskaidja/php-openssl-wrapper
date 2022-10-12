@@ -21,7 +21,7 @@ The interface of PHP's OpenSSL extension is archaic and can only be used procedu
 * **Function outcome not in return value**: The (primary) result that OpenSSL function produces should also be the return value, instead of returning result through one of the function arguments (e.g. `openssl_sign`). The best examples of awkwardness are `openssl_seal` or `openssl_csr_new` which both return values inside multiple input parameters.
 * **Key/Certificate/CSR objects are just numb internal DTO-s**: Although in PHP 8 the OpenSSL resources were replaced with objects (`OpenSSLCertificate`, `OpenSSLCertificateSigningRequest` and `OpenSSLAsymmetricKey`), they are internally still just plain DTO-s (Data Transfer Objects). There's no methods or properties exposed and they can only be used in procedural way by specifying it as parameter to one of the `openssl_*` functions. This library wraps those objects to provide direct access to OpenSSL methods specific to the object.
 
-The functionality with extension is retained 99%, which means that all internal `openssl_*` functions (except deprecated or duplicates) are wrapped. Difference lies between method signatures: wrapper signatures can be shorter and it's parameters are never specified by reference.
+The functionality with extension is almost fully retained, which means that all internal `openssl_*` functions (except deprecated or duplicates) are wrapped. Difference lies between method signatures: wrapper signatures can be shorter and it's parameters are never specified by reference.
 
 What this library doesn't do: **it doesn't add or change any of the OpenSSL cryptographic functionality**. The only purpose is to just offer convenient object oriented interface for OpenSSL functions.
 
@@ -37,7 +37,7 @@ $result = OpenSSL::pkeyNew([
   'private_key_type' => OPENSSL_KEYTYPE_RSA
 ]);
 ````
-2. *Private*: If you need to customize exceptions, then use [`Proxy`](src/Proxy.php) instance (see below for Customizing exceptions):
+2. *Private*: If you need to customize/intercept exceptions, then use [`Proxy`](src/Proxy.php) instance (see below for Customizing/intercepting exceptions):
 ```php
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
@@ -48,10 +48,6 @@ $result = $proxy->pkeyNew([
    'private_key_type' => OPENSSL_KEYTYPE_RSA
 ]);
 ````
-
-Which interface to choose depends of the nature of the developed software:
-* For another library based on this wrapper, the *private* wrapper is strongly recommended due the ability to configure and encapsulate the wrapper instance. This is nesseccary to avoid any conflicts with simultanous usage of this wrapper by multiple libraries in the same package. _Public_ wrapper can't be configured and has always the same behaviour for all it's users.
-* When developing for example an end user UI (where simultaneous usage of this wrapper by multiple libraries can be resolved at development time) and custom exceptions are not required, then *public* wrapper is probably fine.
 
 ### Mapping OpenSSL function to wrapper method name
 Most of the OpenSSL functions have counterparts in wrapper class (but see exceptions below).
@@ -112,7 +108,7 @@ When internal `openssl_*` function fails under the hood, exception [`OpenSSLCall
 * `$exception->errors()->openSSL()` returns array of the warnings/errors reported by OpenSSL library
 * `$exception->errors()->php()` returns array of warnings/errors reported by PHP (by emitting warnings)
 
-#### Customizing exceptions
+#### Customizing/intercepting exceptions
 
 Sometimes it's nesseccary to provide customized exceptions instead of built-in [`OpenSSLCallFailedException`](src/Exception/OpenSSLCallFailedException.php). There's couple of ways for doing it.
 
@@ -133,34 +129,70 @@ try {
 }
 ```
 
-However, this can be solved more efficiently by registering failure handler for specific `openssl_*` function and providing customized exception through callback. This requires _private_ wrapper instance:
+However, to provide more flexible way of intercepting failures (e.g. for logging), we can register failure handler and associate it with specific or anykind of `openssl_*` function:
 
 ```php
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
+use margusk\OpenSSL\Wrapper\Proxy\Options as OpenSSLProxyOptions;
 
-class MyCustomException extends Exception {}
+class MyCustomException extends Exception
+{
+    // ...
+}
+
+function myLoggingFunc(string $msg)
+{
+    // ...
+}
+
+// Create Proxy options and register failure handler for "openssl_pkey_new"
+$options = (new OpenSSLProxyOptions())
+    ->registerFailureHandler('openssl_pkey_new', function(OpenSSLCallFailedException $exception): Throwable {
+        myLoggingFunc($exception->funcName() . ': ' $exception->getMessage());
+
+        return new MyCustomException(
+            $exception->getMessage(), 
+            $exception->getCode(), 
+            $exception
+        );
+   });
 
 // Create private wrapper instance
-$proxy = new OpenSSLProxy();
+$proxy = new OpenSSLProxy($options);
 
-// Configure failure handler for "openssl_pkey_new"
-$proxy->options()->onCallFailed('openssl_pkey_new', function(OpenSSLCallFailedException $exception): Throwable {
-    return new MyCustomException(
-        $exception->getMessage(), 
-        $exception->getCode(), 
-        $exception
-    );
-});
-
-// If openssl_pkey_new fails, then MyOpenSSLException is thrown instead of OpenSSLCallFailedException
+// If openssl_pkey_new fails, then error is logged and MyOpenSSLException is thrown instead of OpenSSLCallFailedException
 $pkey = $proxy->pkeyNew([
    'private_key_type' => OPENSSL_KEYTYPE_RSA
 ])->value();
 ```
 
-Failure handler is registered using `$proxy->options()->onCallFailed(string $pattern, Closure $cb)` where:
-1. _$pattern_ denotes internal function name for which the handler is executed. If prefixed with **regex:** then the remainder is interpreted as regular expression.
+Failure handler is registered using `OpenSSLProxyOptions::registerFailureHandler(string $pattern, Closure $cb)` where:
+* _$pattern_ denotes internal function name for which the handler is executed. If prefixed with **regex:** then the remainder is interpreted as regular expression.
    
-      E.g. **regex:openssl_.*** or **regex:.*** will catch all `openssl_*` functions that fail
-2. _$cb_ is callback accepting 1 parameter of `OpenSSLCallFailedException` and returning `Throwable`. It's also totally okay to throw directly from the callback without returning exception.
+   E.g. **regex:openssl_.*** or **regex:.*** will catch all `openssl_*` functions that fail
+* _$cb_ is callback accepting 1 parameter of `OpenSSLCallFailedException` and returning `Throwable`. It's also totally okay to throw directly from the callback without returning anything.
+
+Note that `OpenSSLProxyOptions` is immutable class, where each call to `registerFailureHandler` returns cloned instance of itself with new handler added.
+
+To register multiple handlers at once without cloning and throwing away lots of objects for nothing use `OpenSSLProxyOptions::registerFailureHandlers(array $callbacks)`, where `$callbacks` contains `$pattern` and `$cb` parameters in associative way:
+```php
+// Register specific handler for "openssl_pkey_new" and another handler for the rest of "openssl_*" functions
+$options = (new OpenSSLProxyOptions())
+    ->registerFailureHandlers([
+        'openssl_pkey_new' => function(OpenSSLCallFailedException $exception): Throwable {
+            myLoggingFunc1($exception->funcName() . ': ' $exception->getMessage());
+
+            return new MyCustomException(
+                $exception->getMessage(), 
+                $exception->getCode(), 
+                $exception
+           );
+        },
+        
+        'regex:openssl_.*' => function(OpenSSLCallFailedException $exception): Throwable {
+            myLoggingFunc2($exception->funcName() . ': ' $exception->getMessage());
+            return $exception;
+        }
+    ]);
+```
