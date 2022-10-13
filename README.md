@@ -1,3 +1,5 @@
+[![PHP Composer](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/php.yml/badge.svg)](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/php.yml)
+
 # PHP OpenSSL wrapper
 Object Oriented wrapper around PHP OpenSSL extension
 
