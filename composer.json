@@ -27,5 +27,8 @@
         "psr-4": {
             "margusk\\OpenSSL\\Wrapper\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
