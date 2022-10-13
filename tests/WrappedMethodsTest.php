@@ -105,6 +105,15 @@ fYiO/RwFocvAJA==
         $this->assertEquals(16, $p->cipherIvLength('AES-128-CBC')->value());
     }
 
+    /**
+     * @requires PHP 8.2
+     */
+    public function test_aes_256_key_length_must_be_32()
+    {
+        $p = new OpenSSLProxy();
+        $this->assertEquals(32, $p->cipherKeyLength('AES-256-CBC')->value());
+    }
+
     public function test_result_contains_correct_function_name()
     {
         $p = new OpenSSLProxy();
