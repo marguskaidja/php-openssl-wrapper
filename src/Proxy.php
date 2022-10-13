@@ -818,13 +818,16 @@ class Proxy
         string $cipherAlgo,
     ): SealResult {
         return (new Call($this, 'seal'))
-            ->withParameters([
-                $data,
-                null,
-                null,
-                $publicKey,
-                $cipherAlgo,
-                ''
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    null,
+                    $publicKey,
+                    $cipherAlgo,
+                    ''
+                ],
+                'returnNthParameter' => 1
             ])
             ->getSealResult();
     }
