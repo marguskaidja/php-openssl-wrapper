@@ -14,7 +14,6 @@ namespace margusk\OpenSSL\Wrapper;
 
 use margusk\GetSet\Attributes\Get;
 use margusk\GetSet\GetSetTrait;
-use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
 use margusk\OpenSSL\Wrapper\Parameter\CSR;
