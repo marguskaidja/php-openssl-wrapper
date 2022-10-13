@@ -81,7 +81,7 @@ class CSR extends Parameter
     }
 
     /**
-     * Generates an x509 certificate from the given CSR.
+     * Generates a x509 certificate from the given CSR.
      *
      * @link https://www.php.net/manual/en/function.openssl-csr-sign.php
      */

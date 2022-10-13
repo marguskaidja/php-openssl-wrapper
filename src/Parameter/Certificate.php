@@ -14,7 +14,6 @@ namespace margusk\OpenSSL\Wrapper\Parameter;
 
 use margusk\OpenSSL\Wrapper\Parameter;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
-use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
 use margusk\OpenSSL\Wrapper\Proxy;
 use margusk\OpenSSL\Wrapper\Result\Array_ as ArrayResult;
 use margusk\OpenSSL\Wrapper\Result\AsymmetricKey as KeyResult;
@@ -22,6 +21,7 @@ use margusk\OpenSSL\Wrapper\Result\Bool_ as BoolResult;
 use margusk\OpenSSL\Wrapper\Result\Int_ as IntResult;
 use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use OpenSSLCertificate;
+use OpenSSLAsymmetricKey;
 
 /**
  * @method OpenSSLCertificate internal()
@@ -59,8 +59,8 @@ class Certificate extends Parameter
      * @link https://www.php.net/manual/en/function.openssl-pkcs12-export-to-file.php
      */
     public function pkcs12ExportToFile(
-        Cert|OpenSSLCertificate|string $certificate,
         string $outputFilename,
+        Key|Certificate|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $privateKey,
         string $passphrase,
         array $options = []
     ): BoolResult {
@@ -73,7 +73,7 @@ class Certificate extends Parameter
      * @link https://www.php.net/manual/en/function.openssl-pkcs12-export.php
      */
     public function pkcs12Export(
-        Cert|OpenSSLCertificate|string $certificate,
+        Key|Certificate|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $privateKey,
         string $passphrase,
         array $options = []
     ): StringResult {
@@ -198,7 +198,7 @@ class Certificate extends Parameter
      * @link https://www.php.net/manual/en/function.openssl-x509-check-private-key.php
      */
     public function x509CheckPrivateKey(
-        Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $privateKey
+        Key|Certificate|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $privateKey
     ): BoolResult {
         return $this->proxy->x509CheckPrivateKey($this, $privateKey);
     }
@@ -260,13 +260,13 @@ class Certificate extends Parameter
     }
 
     /**
-     * Verifies that the certificate certificate was signed by the private key corresponding to
+     * Verifies that the certificate was signed by the private key corresponding to
      * public key public_key.
      *
      * @link https://www.php.net/manual/en/function.openssl-x509-verify.php
      */
     public function x509Verify(
-        Key|Cert|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $publicKey
+        Key|Certificate|OpenSSLAsymmetricKey|OpenSSLCertificate|array|string $publicKey
     ): IntResult {
         return $this->proxy->x509Verify($this, $publicKey);
     }
