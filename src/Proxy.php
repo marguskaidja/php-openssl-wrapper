@@ -52,17 +52,25 @@ class Proxy
 
     /**
      * Gets the cipher initialization vector (iv) length.
-     *
+     * @requires PHP 8.2
      * @link   https://www.php.net/manual/en/function.openssl-cipher-iv-length
-     *
-     * @param  string  $cipherAlgo  The cipher method, see openssl_get_cipher_methods for a list of potential values.
-     *
-     * @return Int
-     * @throws OpenSSLCallFailedException
      */
     public function cipherIvLength(string $cipherAlgo): IntResult
     {
         return (new Call($this, 'cipher_iv_length'))
+            ->withParameters([$cipherAlgo])
+            ->getIntResult();
+    }
+
+    /**
+     * Gets the cipher key length (PHP 8 >= 8.2.0)
+     *
+     * @requires PHP 8.2
+     * @link   https://www.php.net/manual/en/function.openssl-cipher-key-length.php
+     */
+    public function cipherKeyLength(string $cipherAlgo): IntResult
+    {
+        return (new Call($this, 'cipher_key_length'))
             ->withParameters([$cipherAlgo])
             ->getIntResult();
     }
