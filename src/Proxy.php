@@ -803,7 +803,7 @@ class Proxy
     public function randomPseudoBytes(int $length): RandomPseudoBytesResult
     {
         return (new Call($this, 'random_pseudo_bytes'))
-            ->withParameters(func_get_args())
+            ->withParameters([$length, null])
             ->getRandomPseudoBytesResult();
     }
 
