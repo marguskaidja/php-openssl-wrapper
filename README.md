@@ -1,6 +1,4 @@
-[![PHP 8.0](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP80.yml/badge.svg)](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP80.yml)
-[![PHP 8.1](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP81.yml/badge.svg)](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP81.yml)
-[![PHP 8.2](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP82.yml/badge.svg)](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/PHP82.yml)
+[![Tests](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/tests.yml/badge.svg)](https://github.com/marguskaidja/php-openssl-wrapper/actions/workflows/tests.yml)
 
 # PHP OpenSSL wrapper
 Object Oriented wrapper around PHP OpenSSL extension
