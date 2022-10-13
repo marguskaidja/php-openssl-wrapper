@@ -1,0 +1,36 @@
+name: PHP 8.2
+
+on: [push, pull_request]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: PHP 8.2
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: openssl
+        tools: phpunit
+
+    - name: Display versions
+      run: |
+        php -v
+        php -i
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ matrix.php }}-composer
+
+    - name: Composer install
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install -n
+
+    - run: vendor/bin/phpunit
