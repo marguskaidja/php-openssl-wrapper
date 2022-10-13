@@ -803,7 +803,7 @@ class Proxy
     public function randomPseudoBytes(int $length): RandomPseudoBytesResult
     {
         return (new Call($this, 'random_pseudo_bytes'))
-            ->withParameters(func_get_args())
+            ->withParameters([$length, null])
             ->getRandomPseudoBytesResult();
     }
 
@@ -818,13 +818,16 @@ class Proxy
         string $cipherAlgo,
     ): SealResult {
         return (new Call($this, 'seal'))
-            ->withParameters([
-                $data,
-                null,
-                null,
-                $publicKey,
-                $cipherAlgo,
-                ''
+            ->with([
+                'parameters' => [
+                    $data,
+                    null,
+                    null,
+                    $publicKey,
+                    $cipherAlgo,
+                    ''
+                ],
+                'returnNthParameter' => 1
             ])
             ->getSealResult();
     }

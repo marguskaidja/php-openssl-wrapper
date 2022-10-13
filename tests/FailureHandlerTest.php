@@ -15,7 +15,6 @@ namespace margusk\OpenSSL\Wrapper\Tests;
 use margusk\OpenSSL\Wrapper\Errors;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
-use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
 use margusk\OpenSSL\Wrapper\Proxy\Options as OpenSSLProxyOptions;
 use PHPUnit\Framework\TestCase;
 use Throwable;

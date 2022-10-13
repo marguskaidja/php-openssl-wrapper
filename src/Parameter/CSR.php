@@ -77,7 +77,7 @@ class CSR extends Parameter
      */
     public function csrGetSubject(bool $shortNames = true): ArrayResult
     {
-        return $this->proxy->csrGetSubject($shortNames);
+        return $this->proxy->csrGetSubject($this, $shortNames);
     }
 
     /**
