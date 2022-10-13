@@ -69,9 +69,6 @@ class AsymmetricKey extends Parameter
      * Returns an array with the key details
      *
      * @link https://www.php.net/manual/en/function.openssl-pkey-get-details.php
-     *
-     * @return array Returns an array with the key details
-     * @throws OpenSSLCallFailedException
      */
     public function pkeyGetDetails(): ArrayResult
     {
