@@ -42,7 +42,6 @@ $result = OpenSSL::pkeyNew([
 ````
 2. *Private*: If you need to customize/intercept exceptions, then use [`Proxy`](src/Proxy.php) instance (see below for Customizing/intercepting exceptions):
 ```php
-use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
 
 $proxy = new OpenSSLProxy();
@@ -165,9 +164,13 @@ $options = (new OpenSSLProxyOptions())
 $proxy = new OpenSSLProxy($options);
 
 // If openssl_pkey_new fails, then error is logged and MyOpenSSLException is thrown instead of OpenSSLCallFailedException
-$pkey = $proxy->pkeyNew([
-   'private_key_type' => OPENSSL_KEYTYPE_RSA
-])->value();
+try {
+    $pkey = $proxy->pkeyNew([
+      'private_key_type' => OPENSSL_KEYTYPE_RSA
+    ])->value();
+} catch (MyCustomException $e) {
+    echo "MyCustomException: " . $e->getMessage() . "\n";
+}
 ```
 
 Failure handler is registered using `OpenSSLProxyOptions::registerFailureHandler(string $pattern, Closure $cb)` where:
@@ -180,6 +183,9 @@ Note that `OpenSSLProxyOptions` is immutable class, where each call to `register
 
 To register multiple handlers at once without cloning and throwing away lots of objects for nothing use `OpenSSLProxyOptions::registerFailureHandlers(array $callbacks)`, where `$callbacks` contains `$pattern` and `$cb` parameters in associative way:
 ```php
+use margusk\OpenSSL\Wrapper\Proxy\Options as OpenSSLProxyOptions;
+use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
+
 // Register specific handler for "openssl_pkey_new" and another handler for the rest of "openssl_*" functions
 $options = (new OpenSSLProxyOptions())
     ->registerFailureHandlers([
@@ -199,3 +205,6 @@ $options = (new OpenSSLProxyOptions())
         }
     ]);
 ```
+
+## License
+This library is released under the MIT License.
