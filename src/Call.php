@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
+use function margusk\Utils\Warbsorber;
 use Closure;
 use margusk\GetSet\Attributes\Set;
 use margusk\GetSet\Attributes\Immutable;
@@ -94,18 +95,9 @@ class Call
         // wants to change one of them (e.g. openssl_sign)
         $nativeResult = null;
 
-        $phpErrors = Util::catchPHPErrors(
-            function () use (&$nativeResult, $funcName, &$outParameters) {
-                $nativeResult = $funcName(...$outParameters);
-            }
-        );
-
-        // Remove function name prefix from messages
-        foreach ($phpErrors as $n => $error) {
-            if (strcasecmp(substr($error['message'], 0, $lenPrefix), $funcNamePrefix) == 0) {
-                $phpErrors[$n]['message'] = trim(substr($error['message'], $lenPrefix));
-            }
-        }
+        $phpErrors = Warbsorber(function () use (&$nativeResult, $funcName, &$outParameters) {
+            $nativeResult = $funcName(...$outParameters);
+        })->removeFunctionPrefix($funcName);
 
         $errors = new Errors($phpErrors, $this->collectOpenSSLErrors());
         $callFailed = false;

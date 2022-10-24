@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Proxy;
 
+use function margusk\Utils\Warbsorber;
 use Closure;
 use Throwable;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
@@ -78,7 +79,7 @@ class Options
             $pattern = substr($pattern, strlen($regexPrefix));
             $patternEx = "|".$pattern."|i";
 
-            $errors = Util::catchPHPErrors(function () use ($patternEx) {
+            $errors = Warbsorber(function () use ($patternEx) {
                 preg_match($patternEx, "");
             });
 
@@ -87,7 +88,7 @@ class Options
                     sprintf(
                         'Invalid REGEX pattern "%s": %s',
                         $pattern,
-                        $errors[0]['message']
+                        $errors[0]->errStr
                     )
                 );
             }
