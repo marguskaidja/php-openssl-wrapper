@@ -3,20 +3,7 @@
 # PHP OpenSSL wrapper
 Object Oriented wrapper around PHP OpenSSL extension
 
-## Requirements
-
-Requires:
-* PHP 8+
-* [PHP OpenSSL extension](https://www.php.net/manual/en/book.openssl.php)
-
-## Installation
-
-Install with composer:
-```bash
-composer require margusk/openssl-wrapper
-```
-
-## Goal
+## Problems that this library solves
 The interface of PHP's OpenSSL extension is archaic and can only be used procedural way, which makes it awkward to use and requires excessive code to handle errors and results. This library tries to solve following shortcomings:
 * **Errors are not handled using Exceptions**: The failures should be always reported using Exceptions instead of procedural way by returning `false` or `-1`.
 * **Unexpected PHP warnings**: PHP OpenSSL functions should not emit PHP warnings. All warnings should be silently collected and handed over using Exception or through return value. This way the caller can programmatically decide, how to handle them (e.g. log warnings to specific place).
@@ -26,6 +13,20 @@ The interface of PHP's OpenSSL extension is archaic and can only be used procedu
 The functionality with extension is almost fully retained, which means that all internal `openssl_*` functions (except deprecated or duplicates) are wrapped. Difference lies between method signatures: wrapper signatures can be shorter and it's parameters are never specified by reference.
 
 What this library doesn't do: **it doesn't add or change any of the OpenSSL cryptographic functionality**. The only purpose is to just offer convenient object oriented interface for OpenSSL functions.
+
+## Requirements
+
+* PHP >= 8.0
+* [OpenSSL extension](https://www.php.net/manual/en/book.openssl.php)
+* [margusk/getset](https://github.com/marguskaidja/php-getset)
+* [margusk/utils-warbsorber](https://github.com/marguskaidja/php-utils-warbsorber)
+
+## Installation
+
+Install with composer:
+```bash
+composer require margusk/openssl-wrapper
+```
 
 ## Usage
 
