@@ -13,7 +13,8 @@
     "require": {
         "php": "^8.0",
         "ext-openssl": "*",
-        "margusk/getset": "^2.0"
+        "margusk/getset": "^2.0",
+        "margusk/utils-warbsorber": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

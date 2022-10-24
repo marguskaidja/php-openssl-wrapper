@@ -16,6 +16,7 @@ use margusk\OpenSSL\Wrapper\Errors;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy\Options as OpenSSLProxyOptions;
+use margusk\Utils\Warbsorber\Warnings;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
@@ -35,7 +36,7 @@ class FailureHandlerTest extends TestCase
         $exception = $o->invokeFailureHandler(
             new OpenSSLCallFailedException(
                 'dummy_function',
-                new Errors([], []),
+                new Errors(new Warnings([]), []),
                 null
             )
         );
@@ -62,7 +63,7 @@ class FailureHandlerTest extends TestCase
         $exception = $o->invokeFailureHandler(
             new OpenSSLCallFailedException(
                 'dummy_function2',
-                new Errors([], []),
+                new Errors(new Warnings([]), []),
                 null
             )
         );
@@ -74,7 +75,7 @@ class FailureHandlerTest extends TestCase
         $exception = $o->invokeFailureHandler(
             new OpenSSLCallFailedException(
                 'openssl_sign',
-                new Errors([], []),
+                new Errors(new Warnings([]), []),
                 null
             )
         );
@@ -85,7 +86,7 @@ class FailureHandlerTest extends TestCase
         // Test default handler
         $defaultException = new OpenSSLCallFailedException(
             'some_other_function',
-            new Errors([], []),
+            new Errors(new Warnings([]), []),
             null
         );
         $exception = $o->invokeFailureHandler($defaultException);
@@ -104,7 +105,7 @@ class FailureHandlerTest extends TestCase
 
         $defaultException = new OpenSSLCallFailedException(
             'dummy_function',
-            new Errors([], []),
+                new Errors(new Warnings([]), []),
             null
         );
 

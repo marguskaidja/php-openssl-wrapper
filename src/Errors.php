@@ -14,8 +14,13 @@ namespace margusk\OpenSSL\Wrapper;
 
 use margusk\GetSet\Attributes\Get;
 use margusk\GetSet\GetSetTrait;
+use margusk\Utils\Warbsorber\Entry;
+use margusk\Utils\Warbsorber\Warnings;
 
 /**
+ * @property-read array     $openSSL Errors/warnings reported by linked openSSL library
+ * @property-read Warnings  $php Errors/warnings reported by PHP engine
+ *
  * @method array openSSL()  Returns errors/warnings reported by linked openSSL library
  * @method array php()      Returns errors/warnings reported by PHP engine
  */
@@ -25,7 +30,7 @@ class Errors
     use GetSetTrait;
 
     public function __construct(
-        protected array $php,
+        protected Warnings $php,
         protected array $openSSL
     ) {
     }
@@ -33,7 +38,10 @@ class Errors
     public function all(): array
     {
         return array_merge(
-            array_column($this->php, 'message'),
+            array_map(
+                fn(Entry $e) => $e->errStr,
+                $this->php->getArrayCopy()
+            ),
             $this->openSSL
         );
     }
