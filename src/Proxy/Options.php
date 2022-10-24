@@ -17,7 +17,6 @@ use Closure;
 use Throwable;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
-use margusk\OpenSSL\Wrapper\Util;
 use ReflectionFunction;
 
 class Options
