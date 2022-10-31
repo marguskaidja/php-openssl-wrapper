@@ -16,7 +16,7 @@ use margusk\OpenSSL\Wrapper\Errors;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Proxy\Options as OpenSSLProxyOptions;
-use margusk\Utils\Warbsorber\Warnings;
+use margusk\Warbsorber\Warnings;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
@@ -121,7 +121,9 @@ class FailureHandlerTest extends TestCase
 
         (new OpenSSLProxyOptions())->registerFailureHandler(
             'regex:this[is_invalid_re}gex',
-            function ($exception): Throwable {}
+            function (OpenSSLCallFailedException $exception): Throwable {
+                return $exception;
+            }
         );
     }
 }
