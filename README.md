@@ -18,8 +18,9 @@ What this library doesn't do: **it doesn't add or change any of the OpenSSL cryp
 
 * PHP >= 8.0
 * [OpenSSL extension](https://www.php.net/manual/en/book.openssl.php)
-* [margusk/getset](https://github.com/marguskaidja/php-getset)
-* [margusk/utils-warbsorber](https://github.com/marguskaidja/php-utils-warbsorber)
+* Packages:
+  * [Accessors](https://github.com/marguskaidja/php-accessors)
+  * [Warbsorber](https://github.com/marguskaidja/php-utils-warbsorber)
 
 ## Installation
 
@@ -30,9 +31,9 @@ composer require margusk/openssl-wrapper
 
 ## Usage
 
-### Public vs Private interface
+### Static methods vs instance methods
 Wrapper can be used in 2 different ways:
-1. *Public*: the easiest way is to use static [`OpenSSL`](src/OpenSSL.php) class:
+1. **Statically**: the simplest way is to use static [`OpenSSL`](src/OpenSSL.php) class:
 ```php
 use margusk\OpenSSL\Wrapper\OpenSSL;
 
@@ -40,7 +41,7 @@ $result = OpenSSL::pkeyNew([
   'private_key_type' => OPENSSL_KEYTYPE_RSA
 ]);
 ````
-2. *Private*: If you need to customize/intercept exceptions, then use [`Proxy`](src/Proxy.php) instance (see below for Customizing/intercepting exceptions):
+2. Using **instance**: to have ability to customize/intercept exceptions, use [`Proxy`](src/Proxy.php) instance (see below for Customizing/intercepting exceptions):
 ```php
 use margusk\OpenSSL\Wrapper\Proxy as OpenSSLProxy;
 

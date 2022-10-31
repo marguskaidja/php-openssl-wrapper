@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\GetSet\Attributes\Get;
-use margusk\GetSet\GetSetTrait;
+use margusk\Accessors\Attributes\Get;
+use margusk\Accessors\Accessible;
 use margusk\Utils\Warbsorber\Entry;
 use margusk\Utils\Warbsorber\Warnings;
 
@@ -27,7 +27,7 @@ use margusk\Utils\Warbsorber\Warnings;
 #[Get]
 class Errors
 {
-    use GetSetTrait;
+    use Accessible;
 
     public function __construct(
         protected Warnings $php,

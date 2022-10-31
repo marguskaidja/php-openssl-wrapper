@@ -41,13 +41,12 @@ class Options
 
     protected function registerFailureHandlerInternal(string $pattern, Closure $cb): void
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $rf = new ReflectionFunction($cb);
 
         // Check callback's 1-st parameter
         if ($rf->getNumberOfRequiredParameters() > 1) {
-            throw new InvalidArgumentException(
-                sprintf('callback must not require more than 1 parameter')
-            );
+            throw new InvalidArgumentException('callback must not require more than 1 parameter');
         } else {
             $argType = $rf->getParameters()[0]?->getType();
 
