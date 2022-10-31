@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\GetSet\Attributes\Get;
-use margusk\GetSet\GetSetTrait;
+use margusk\Accessors\Attributes\Get;
+use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as Key;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate as Cert;
 use margusk\OpenSSL\Wrapper\Parameter\CSR;
@@ -39,7 +39,7 @@ use OpenSSLCertificateSigningRequest;
 #[Get]
 class Proxy
 {
-    use GetSetTrait;
+    use Accessible;
 
     public function __construct(
         protected ?Options $options = null

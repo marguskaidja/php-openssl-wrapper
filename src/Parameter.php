@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\GetSet\Attributes\Get;
-use margusk\GetSet\GetSetTrait;
+use margusk\Accessors\Attributes\Get;
+use margusk\Accessors\Accessible;
 
 /**
  * @method Proxy proxy()
@@ -22,7 +22,7 @@ use margusk\GetSet\GetSetTrait;
 #[Get]
 abstract class Parameter
 {
-    use GetSetTrait;
+    use Accessible;
 
     public function __construct(
         protected Proxy $proxy,

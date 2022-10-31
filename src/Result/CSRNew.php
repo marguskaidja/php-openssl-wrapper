@@ -32,7 +32,6 @@ class CSRNew extends Result
         $keyOut = $this->outParameters[1];
 
         if ($keyIn instanceof Key && $keyIn->internal() === $keyOut) {
-            /** @var $keyIn Key */
             $this->privateKey = $keyIn;
         } elseif ($keyOut instanceof OpenSSLAsymmetricKey) {
             /** @var $keyIn OpenSSLAsymmetricKey */

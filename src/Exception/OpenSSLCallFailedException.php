@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Exception;
 
-use margusk\GetSet\Attributes\Get;
-use margusk\GetSet\GetSetTrait;
+use margusk\Accessors\Attributes\Get;
+use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Errors;
 use RuntimeException;
 
@@ -25,7 +25,7 @@ use RuntimeException;
 #[Get]
 class OpenSSLCallFailedException extends RuntimeException implements Contract
 {
-    use GetSetTrait;
+    use Accessible;
 
     public function __construct(
         protected string $funcName,
@@ -33,6 +33,6 @@ class OpenSSLCallFailedException extends RuntimeException implements Contract
         protected mixed $nativeResult
     ) {
         $message = $funcName.'(): '.implode("\n", $errors->all());
-        parent::__construct($message, 0, null);
+        parent::__construct($message);
     }
 }

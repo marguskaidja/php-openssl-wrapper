@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Parameter;
 
-use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter;
 use margusk\OpenSSL\Wrapper\Proxy;
 use margusk\OpenSSL\Wrapper\Result\Array_ as ArrayResult;

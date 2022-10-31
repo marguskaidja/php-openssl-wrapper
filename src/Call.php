@@ -14,9 +14,9 @@ namespace margusk\OpenSSL\Wrapper;
 
 use function margusk\Utils\Warbsorber;
 use Closure;
-use margusk\GetSet\Attributes\Set;
-use margusk\GetSet\Attributes\Immutable;
-use margusk\GetSet\GetSetTrait;
+use margusk\Accessors\Attributes\Set;
+use margusk\Accessors\Attributes\Immutable;
+use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey;
 use margusk\OpenSSL\Wrapper\Parameter\Certificate;
@@ -32,6 +32,7 @@ use margusk\OpenSSL\Wrapper\Result\RandomPseudoBytes as RandomPseudoBytesResult;
 use margusk\OpenSSL\Wrapper\Result\Seal as SealResult;
 use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use margusk\OpenSSL\Wrapper\Result\CSRNew as CSRNewResult;
+use Throwable;
 
 /**
  * @method self with(array|string $properties, mixed $value = null)
@@ -42,7 +43,7 @@ use margusk\OpenSSL\Wrapper\Result\CSRNew as CSRNewResult;
 #[Set,Immutable]
 class Call
 {
-    use GetSetTrait;
+    use Accessible;
 
     protected array $parameters = [];
 
@@ -50,6 +51,10 @@ class Call
 
     protected ?int $returnNthParameter = null;
 
+    /**
+     * @param  Proxy   $proxy
+     * @param  string  $funcNameSuffix
+     */
     public function __construct(
         protected Proxy $proxy,
         protected string $funcNameSuffix
@@ -62,29 +67,45 @@ class Call
         // placeholder for extended classes
     }
 
+    /**
+     * @return ArrayResult
+     * @throws Throwable
+     */
     public function getArrayResult(): ArrayResult
     {
         return $this->execute(ArrayResult::class);
     }
 
+    /**
+     * @param  array  $params
+     * @param  int    $lvl
+     *
+     * @return array
+     */
     protected function convertComplexParam(array $params, int $lvl = 0): array
     {
         foreach ($params as $n => $p) {
             if ($p instanceof ComplexParam) {
                 $params[$n] = $p->internal();
             } elseif (0 === $lvl && is_array($p)) {
-                $params[$n] = $this->convertComplexParam($params[$n], $lvl + 1);
+                $params[$n] = $this->convertComplexParam($p, $lvl + 1);
             }
         }
 
         return $params;
     }
 
+    /**
+     * @param  string        $resultClass
+     * @param  Closure|null  $resultValueCreator
+     *
+     * @return Result
+     * @throws Throwable
+     */
     protected function execute(string $resultClass, Closure $resultValueCreator = null): Result
     {
         $funcName = 'openssl_'.$this->funcNameSuffix;
         $funcNamePrefix = $funcName.'():';
-        $lenPrefix = strlen($funcNamePrefix);
 
         // Convert AsymmetricKey, Certificate and CSR into internal representation
         $outParameters = $this->convertComplexParam($this->parameters);
@@ -132,6 +153,9 @@ class Call
         return $this;
     }
 
+    /**
+     * @return array
+     */
     protected function collectOpenSSLErrors(): array
     {
         $result = [];
@@ -141,21 +165,37 @@ class Call
         return $result;
     }
 
+    /**
+     * @return IntResult
+     * @throws Throwable
+     */
     public function getIntResult(): IntResult
     {
         return $this->execute(IntResult::class);
     }
 
+    /**
+     * @return StringResult
+     * @throws Throwable
+     */
     public function getStringResult(): StringResult
     {
         return $this->execute(StringResult::class);
     }
 
+    /**
+     * @return BoolResult
+     * @throws Throwable
+     */
     public function getBoolResult(): BoolResult
     {
         return $this->execute(BoolResult::class);
     }
 
+    /**
+     * @return KeyResult
+     * @throws Throwable
+     */
     public function getKeyResult(): KeyResult
     {
         return $this->execute(
@@ -166,6 +206,10 @@ class Call
         );
     }
 
+    /**
+     * @return CSRNewResult
+     * @throws Throwable
+     */
     public function getCSRNewResult(): CSRNewResult
     {
         return $this->execute(
@@ -176,6 +220,10 @@ class Call
         );
     }
 
+    /**
+     * @return CertResult
+     * @throws Throwable
+     */
     public function getCertResult(): CertResult
     {
         return $this->execute(
@@ -186,16 +234,28 @@ class Call
         );
     }
 
+    /**
+     * @return SealResult
+     * @throws Throwable
+     */
     public function getSealResult(): SealResult
     {
         return $this->execute(SealResult::class);
     }
 
+    /**
+     * @return EncryptResult
+     * @throws Throwable
+     */
     public function getEncryptResult(): EncryptResult
     {
         return $this->execute(EncryptResult::class);
     }
 
+    /**
+     * @return RandomPseudoBytesResult
+     * @throws Throwable
+     */
     public function getRandomPseudoBytesResult(): RandomPseudoBytesResult
     {
         return $this->execute(RandomPseudoBytesResult::class);
