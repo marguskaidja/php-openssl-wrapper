@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use function margusk\Utils\Warbsorber;
+use function margusk\Warbsorber;
 use Closure;
 use margusk\Accessors\Attributes\Set;
 use margusk\Accessors\Attributes\Immutable;
@@ -105,7 +105,6 @@ class Call
     protected function execute(string $resultClass, Closure $resultValueCreator = null): Result
     {
         $funcName = 'openssl_'.$this->funcNameSuffix;
-        $funcNamePrefix = $funcName.'():';
 
         // Convert AsymmetricKey, Certificate and CSR into internal representation
         $outParameters = $this->convertComplexParam($this->parameters);

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Proxy;
 
-use function margusk\Utils\Warbsorber;
+use function margusk\Warbsorber;
 use Closure;
 use Throwable;
 use margusk\OpenSSL\Wrapper\Exception\InvalidArgumentException;

@@ -14,8 +14,8 @@ namespace margusk\OpenSSL\Wrapper;
 
 use margusk\Accessors\Attributes\Get;
 use margusk\Accessors\Accessible;
-use margusk\Utils\Warbsorber\Entry;
-use margusk\Utils\Warbsorber\Warnings;
+use margusk\Warbsorber\Entry;
+use margusk\Warbsorber\Warnings;
 
 /**
  * @property-read array     $openSSL Errors/warnings reported by linked openSSL library

@@ -279,7 +279,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
         $cipherAlgo = 'AES256';
 
         // Seal the data using OpenSSL ext
-        $sealedData = null;
+        $sealedData = '';
         $encryptedKeys = [];
         $iv = null;
         openssl_seal(
