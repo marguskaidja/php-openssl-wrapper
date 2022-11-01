@@ -17,10 +17,7 @@ What this library doesn't do: **it doesn't add or change any of the OpenSSL cryp
 ## Requirements
 
 * PHP >= 8.0
-* [OpenSSL extension](https://www.php.net/manual/en/book.openssl.php)
-* Packages:
-  * [Accessors](https://github.com/marguskaidja/php-accessors)
-  * [Warbsorber](https://github.com/marguskaidja/php-utils-warbsorber)
+* [OpenSSL Extension](https://www.php.net/manual/en/book.openssl.php)
 
 ## Installation
 
