@@ -102,7 +102,7 @@ fYiO/RwFocvAJA==
     public function test_aes_128_cipher_iv_length_must_be_sixteen()
     {
         $p = new OpenSSLProxy();
-        $this->assertEquals(16, $p->cipherIvLength('AES-128-CBC')->value());
+        $this->assertEquals(16, $p->cipherIvLength('AES-128-CBC')->value);
     }
 
     /**
@@ -111,14 +111,14 @@ fYiO/RwFocvAJA==
     public function test_aes_256_key_length_must_be_32()
     {
         $p = new OpenSSLProxy();
-        $this->assertEquals(32, $p->cipherKeyLength('AES-256-CBC')->value());
+        $this->assertEquals(32, $p->cipherKeyLength('AES-256-CBC')->value);
     }
 
     public function test_result_contains_correct_function_name()
     {
         $p = new OpenSSLProxy();
         $result = $p->cipherIvLength('AES-128-CBC');
-        $this->assertEquals('openssl_cipher_iv_length', $result->funcName());
+        $this->assertEquals('openssl_cipher_iv_length', $result->funcName);
     }
 
     public function test_creating_new_private_key_must_succeed()
@@ -132,11 +132,11 @@ fYiO/RwFocvAJA==
         ]);
 
         $this->assertInstanceOf(AsymmetricKeyResult::class, $pkeyResult);
-        $this->assertInstanceOf(OpenSSLAsymmetricKey::class, $pkeyResult->value()->internal());
+        $this->assertInstanceOf(OpenSSLAsymmetricKey::class, $pkeyResult->value->internal);
 
         $this->assertEquals(
-            openssl_pkey_get_details($pkeyResult->value()->internal()),
-            $pkeyResult->value()->pkeyGetDetails()->value()
+            openssl_pkey_get_details($pkeyResult->value->internal),
+            $pkeyResult->value->pkeyGetDetails()->value
         );
     }
 
@@ -158,25 +158,25 @@ fYiO/RwFocvAJA==
 
         $csrResult = $p->csrNew(
             $csrSubject,
-            $pkeyResult->value(),
+            $pkeyResult->value,
             null
         );
 
         $this->assertInstanceOf(CSRNewResult::class, $csrResult);
-        $this->assertInstanceOf(OpenSSLCertificateSigningRequest::class, $csrResult->value()->internal());
+        $this->assertInstanceOf(OpenSSLCertificateSigningRequest::class, $csrResult->value->internal);
 
-        $this->assertEquals($csrSubject, openssl_csr_get_subject($csrResult->value()->internal()));
-        $this->assertEquals($csrSubject, $csrResult->value()->csrGetSubject()->value());
+        $this->assertEquals($csrSubject, openssl_csr_get_subject($csrResult->value->internal));
+        $this->assertEquals($csrSubject, $csrResult->value->csrGetSubject()->value);
 
         // Verify that csr is created with the $pkeyResult
         $this->assertEquals(
-            openssl_pkey_get_details($csrResult->value()->csrGetPublicKey()->value()->internal())['key'],
-            $pkeyResult->value()->pkeyGetDetails()->value()['key']
+            openssl_pkey_get_details($csrResult->value->csrGetPublicKey()->value->internal)['key'],
+            $pkeyResult->value->pkeyGetDetails()->value['key']
         );
 
         $this->assertMatchesRegularExpression(
             '/^-----BEGIN CERTIFICATE REQUEST-----.*-----END CERTIFICATE REQUEST-----/s',
-            $csrResult->value()->csrExport()->value()
+            $csrResult->value->csrExport()->value
         );
     }
 
@@ -219,7 +219,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
         $p = new OpenSSLProxy();
 
-        $certificates = $p->pkcs7Read($pkcs7Data)->value();
+        $certificates = $p->pkcs7Read($pkcs7Data)->value;
 
         $this->assertIsArray($certificates);
         $this->assertCount(1, $certificates);
@@ -234,7 +234,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
         $expectedSignature = '0a1eed4a8dd57b44507154203c1007c412fce2d712da7a4c75b3fcc1533b9c9ef406afef8d3e72838ef029065f4f41b9bd13b33a3550a5a397d273e22ea6d47cfc1253a224ed0ac76cebc4177ae032dd1de19afcb8d02805c543f9a2b0567b3c12ff4a1dab07459bfbe31a28622237658b98f9e8ef13eee044006630b05b467e';
 
         $pkeyResult = $p->pkeyGetPrivate($this->testPrivateKey);
-        $signedData = $pkeyResult->value()->sign('random data to test sign method')->value();
+        $signedData = $pkeyResult->value->sign('random data to test sign method')->value;
 
         $this->assertEquals($expectedSignature, bin2hex($signedData));
     }
@@ -246,7 +246,7 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
 
         // Seal the data using library
         $p = new OpenSSLProxy();
-        $keyDetails = $p->pkeyGetPrivate($this->testPrivateKey)->value()->pkeyGetDetails()->value();
+        $keyDetails = $p->pkeyGetPrivate($this->testPrivateKey)->value->pkeyGetDetails()->value;
 
         $sealResult = $p->seal(
             $data,
@@ -255,19 +255,19 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
         );
 
         $this->assertInstanceOf(SealResult::class, $sealResult);
-        $this->assertEquals(openssl_cipher_iv_length($cipherAlgo), strlen($sealResult->iv()));
-        $this->assertCount(1, $sealResult->encryptedKeys());
-        $this->assertArrayHasKey(0, $sealResult->encryptedKeys());
+        $this->assertEquals(openssl_cipher_iv_length($cipherAlgo), strlen($sealResult->iv));
+        $this->assertCount(1, $sealResult->encryptedKeys);
+        $this->assertArrayHasKey(0, $sealResult->encryptedKeys);
 
         // Open data using OpenSSL extension directly
         $decodedData = null;
         openssl_open(
-            $sealResult->value(),
+            $sealResult->value,
             $decodedData,
-            $sealResult->encryptedKeys()[0],
+            $sealResult->encryptedKeys[0],
             openssl_pkey_get_private($this->testPrivateKey),
             $cipherAlgo,
-            $sealResult->iv()
+            $sealResult->iv
         );
 
         $this->assertEquals($data, $decodedData);
@@ -301,12 +301,12 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
         $decodeResult = $p->open(
             $sealedData,
             $encryptedKeys[0],
-            $p->pkeyGetPrivate($this->testPrivateKey)->value(),
+            $p->pkeyGetPrivate($this->testPrivateKey)->value,
             $cipherAlgo,
             $iv
         );
 
-        $this->assertEquals($data, $decodeResult->value());
+        $this->assertEquals($data, $decodeResult->value);
     }
 
     public function test_generate_random_pseudo_bytes_must_succeed()
@@ -316,7 +316,9 @@ Wm7DCfrPNGVwFWUQOmsPue9rZBgO
         $result = $p->randomPseudoBytes($length);
 
         $this->assertInstanceOf(RandomPseudoBytesResult::class, $result);
-        $this->assertEquals($length, strlen($result->value()));
+
+
+        $this->assertEquals($length, strlen($result->value));
         $this->assertIsBool($result->strongResult());
     }
 }

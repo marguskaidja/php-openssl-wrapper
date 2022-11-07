@@ -15,7 +15,7 @@ namespace margusk\OpenSSL\Wrapper\Result;
 use margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method bool value()
+ * @property-read bool $value
  */
 class Bool_ extends Result
 {

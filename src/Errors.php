@@ -12,19 +12,14 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\Accessors\Attr\Get;
 use margusk\Accessors\Accessible;
 use margusk\Warbsorber\Entry;
 use margusk\Warbsorber\Warnings;
 
 /**
- * @property-read array     $openSSL Errors/warnings reported by linked openSSL library
- * @property-read Warnings  $php Errors/warnings reported by PHP engine
- *
- * @method array openSSL()  Returns errors/warnings reported by linked openSSL library
- * @method array php()      Returns errors/warnings reported by PHP engine
+ * @property-read array     $openSSL    Errors/warnings reported by linked openSSL library
+ * @property-read Warnings  $php        Errors/warnings reported by PHP engine
  */
-#[Get]
 class Errors
 {
     use Accessible;

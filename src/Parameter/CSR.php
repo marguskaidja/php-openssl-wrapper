@@ -26,7 +26,7 @@ use OpenSSLCertificate;
 use OpenSSLAsymmetricKey;
 
 /**
- * @method OpenSSLCertificateSigningRequest internal()
+ * @property-read OpenSSLCertificateSigningRequest $internal
  */
 class CSR extends Parameter
 {

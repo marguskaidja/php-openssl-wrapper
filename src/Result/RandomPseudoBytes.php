@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method bool strongResult()
+ * @property-read bool $strongResult
  */
 class RandomPseudoBytes extends String_
 {

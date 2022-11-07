@@ -19,8 +19,8 @@ use margusk\OpenSSL\Wrapper\Result;
 use OpenSSLAsymmetricKey;
 
 /**
- * @method CSRParam value()
- * @method Key privateKey()
+ * @property-read CSRParam  $value
+ * @property-read Key       $privateKey
  */
 class CSRNew extends Result
 {
@@ -31,11 +31,11 @@ class CSRNew extends Result
         $keyIn = $this->inParameters[1];
         $keyOut = $this->outParameters[1];
 
-        if ($keyIn instanceof Key && $keyIn->internal() === $keyOut) {
+        if ($keyIn instanceof Key && $keyIn->internal === $keyOut) {
             $this->privateKey = $keyIn;
         } elseif ($keyOut instanceof OpenSSLAsymmetricKey) {
             /** @var $keyIn OpenSSLAsymmetricKey */
-            $this->privateKey = new Key($this->value()->proxy(), $keyOut);
+            $this->privateKey = new Key($this->value->proxy, $keyOut);
         } else {
             throw new RuntimeException(
                 sprintf(

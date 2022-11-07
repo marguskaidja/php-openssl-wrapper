@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method array    encryptedKeys()
- * @method string   iv()
+ * @property-read array     $encryptedKeys
+ * @property-read string    $iv
  */
 class Seal extends String_
 {

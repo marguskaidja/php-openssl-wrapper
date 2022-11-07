@@ -16,7 +16,7 @@ use margusk\OpenSSL\Wrapper\Parameter\Certificate as CertParam;
 use margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method CertParam value()
+ * @property-read CertParam $value
  */
 class Certificate extends Result
 {

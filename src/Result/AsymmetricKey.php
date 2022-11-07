@@ -16,7 +16,7 @@ use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey as AsymmetricKeyParam;
 use margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method AsymmetricKeyParam value()
+ * @property-read AsymmetricKeyParam $value
  */
 class AsymmetricKey extends Result
 {

@@ -107,7 +107,7 @@ class Options
 
     public function invokeFailureHandler(OpenSSLCallFailedException $exception): Throwable
     {
-        $funcName = $exception->funcName();
+        $funcName = $exception->funcName;
 
         foreach ($this->failureHandlers as $e) {
             if (('regex' === $e['type'] && preg_match($e['pattern'], $funcName))

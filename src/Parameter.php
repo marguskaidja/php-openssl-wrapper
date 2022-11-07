@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\Accessors\Attr\Get;
 use margusk\Accessors\Accessible;
 
 /**
- * @method Proxy proxy()
- * @method mixed internal()
+ * @property-read Proxy $proxy
+ * @property-read mixed $internal
  */
-#[Get]
 abstract class Parameter
 {
     use Accessible;

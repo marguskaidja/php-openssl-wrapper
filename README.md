@@ -149,7 +149,7 @@ function myLoggingFunc(string $msg)
 // Create Proxy options and register failure handler for "openssl_pkey_new"
 $options = (new OpenSSLProxyOptions())
     ->registerFailureHandler('openssl_pkey_new', function(OpenSSLCallFailedException $exception): Throwable {
-        myLoggingFunc($exception->funcName() . ': ' $exception->getMessage());
+        myLoggingFunc($exception->funcName . ': ' $exception->getMessage());
 
         return new MyCustomException(
             $exception->getMessage(), 
@@ -165,7 +165,7 @@ $proxy = new OpenSSLProxy($options);
 try {
     $pkey = $proxy->pkeyNew([
       'private_key_type' => OPENSSL_KEYTYPE_RSA
-    ])->value();
+    ])->value;
 } catch (MyCustomException $e) {
     echo "MyCustomException: " . $e->getMessage() . "\n";
 }
@@ -188,7 +188,7 @@ use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 $options = (new OpenSSLProxyOptions())
     ->registerFailureHandlers([
         'openssl_pkey_new' => function(OpenSSLCallFailedException $exception): Throwable {
-            myLoggingFunc1($exception->funcName() . ': ' $exception->getMessage());
+            myLoggingFunc1($exception->funcName . ': ' $exception->getMessage());
 
             return new MyCustomException(
                 $exception->getMessage(), 
@@ -198,7 +198,7 @@ $options = (new OpenSSLProxyOptions())
         },
         
         'regex:openssl_.*' => function(OpenSSLCallFailedException $exception): Throwable {
-            myLoggingFunc2($exception->funcName() . ': ' $exception->getMessage());
+            myLoggingFunc2($exception->funcName . ': ' $exception->getMessage());
             return $exception;
         }
     ]);

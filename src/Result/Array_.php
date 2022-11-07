@@ -15,7 +15,7 @@ namespace margusk\OpenSSL\Wrapper\Result;
 use margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method array value()
+ * @property-read array $value
  */
 class Array_ extends Result
 {

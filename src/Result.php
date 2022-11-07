@@ -12,18 +12,16 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper;
 
-use margusk\Accessors\Attr\Get;
 use margusk\Accessors\Accessible;
 use Stringable;
 
 /**
- * @method string   funcName()      Returns openSSL extension's function name that was called
- * @method Errors   warnings()      Returns Errors object encapsulating possible PHP/openSSL warning messages during the openssl_* function call
- * @method array    inParameters()  Returns list of input parameters passed into openssl_* function
- * @method array    outParameters() Returns list of parameters after beeing passed into openssl_* function and beeing possibly modified (e.g. openssl_seal)
- * @method mixed    value()         Returns interpreted return value of openssl_* function
+ * @property-read string   $funcName        OpenSSL extension's function name that was called
+ * @property-read Errors   $warnings        Errors object encapsulating possible PHP/openSSL warning messages during the openssl_* function call
+ * @property-read array    $inParameters    List of input parameters passed into openssl_* function
+ * @property-read array    $outParameters   List of parameters after beeing passed into openssl_* function and beeing possibly modified (e.g. openssl_seal)
+ * @property-read mixed    $value           Returns interpreted return value of openssl_* function
  */
-#[Get]
 abstract class Result implements Stringable
 {
     use Accessible;

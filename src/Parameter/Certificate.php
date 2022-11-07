@@ -24,7 +24,7 @@ use OpenSSLCertificate;
 use OpenSSLAsymmetricKey;
 
 /**
- * @method OpenSSLCertificate internal()
+ * @property-read OpenSSLCertificate $internal
  */
 class Certificate extends Parameter
 {

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method string tag()
+ * @property-read string $tag
  */
 class Encrypt extends String_
 {

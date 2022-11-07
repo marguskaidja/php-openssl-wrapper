@@ -22,7 +22,7 @@ use margusk\OpenSSL\Wrapper\Result\String_ as StringResult;
 use OpenSSLAsymmetricKey;
 
 /**
- * @method OpenSSLAsymmetricKey internal()
+ * @property-read OpenSSLAsymmetricKey $internal
  */
 class AsymmetricKey extends Parameter
 {

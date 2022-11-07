@@ -15,7 +15,7 @@ namespace margusk\OpenSSL\Wrapper\Result;
 use margusk\OpenSSL\Wrapper\Result;
 
 /**
- * @method string value()
+ * @property-read string $value
  */
 class String_ extends Result
 {

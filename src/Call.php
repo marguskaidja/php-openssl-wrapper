@@ -86,7 +86,7 @@ class Call
     {
         foreach ($params as $n => $p) {
             if ($p instanceof ComplexParam) {
-                $params[$n] = $p->internal();
+                $params[$n] = $p->internal;
             } elseif (0 === $lvl && is_array($p)) {
                 $params[$n] = $this->convertComplexParam($p, $lvl + 1);
             }
@@ -127,7 +127,7 @@ class Call
         }
 
         if ($callFailed) {
-            throw $this->proxy->options()->invokeFailureHandler(
+            throw $this->proxy->options->invokeFailureHandler(
                 new OpenSSLCallFailedException($funcName, $errors, $nativeResult)
             );
         }

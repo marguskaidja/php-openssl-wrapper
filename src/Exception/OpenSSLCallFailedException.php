@@ -12,17 +12,15 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Exception;
 
-use margusk\Accessors\Attr\Get;
 use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Errors;
 use RuntimeException;
 
 /**
- * @method string   funcName() Returns native openssl_* function causing the failure
- * @method Errors   errors() Returns Errors object encapsulating PHP/openSSL error/warning messages during the openssl_* function call
- * @method mixed    nativeResult() Returns the native result from the failed openssl_* function
+ * @property-read string   $funcName        Returns native openssl_* function causing the failure
+ * @property-read Errors   $errors          Returns Errors object encapsulating PHP/openSSL error/warning messages during the openssl_* function call
+ * @property-read mixed    $nativeResult    Returns the native result from the failed openssl_* function
  */
-#[Get]
 class OpenSSLCallFailedException extends RuntimeException implements Contract
 {
     use Accessible;
