@@ -14,8 +14,8 @@ namespace margusk\OpenSSL\Wrapper;
 
 use function margusk\Warbsorber;
 use Closure;
-use margusk\Accessors\Attributes\Set;
-use margusk\Accessors\Attributes\Immutable;
+use margusk\Accessors\Attr\Set;
+use margusk\Accessors\Attr\Immutable;
 use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Exception\OpenSSLCallFailedException;
 use margusk\OpenSSL\Wrapper\Parameter\AsymmetricKey;

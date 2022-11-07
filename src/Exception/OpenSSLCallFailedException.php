@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace margusk\OpenSSL\Wrapper\Exception;
 
-use margusk\Accessors\Attributes\Get;
+use margusk\Accessors\Attr\Get;
 use margusk\Accessors\Accessible;
 use margusk\OpenSSL\Wrapper\Errors;
 use RuntimeException;
