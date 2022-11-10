@@ -35,6 +35,7 @@ use OpenSSLCertificateSigningRequest;
 /**
  * @property-read Options $options
  */
+#[Get]
 class Proxy
 {
     use Accessible;
